@@ -21,5 +21,11 @@ urlpatterns = [
     path('ad_delete_check/<int:id>', views.ad_delete_check, name='ad_delete_check'),
     #--------------------------------------------------------User Module
     path('user_regi/', views.user_regi, name='user_regi'),
+    path('all_item/', views.all_item, name='all_item'),
+    path('all_items_add_cart/<int:id>', views.all_items_add_cart, name='all_items_add_cart'),
+    path('product_view/<int:item_id>', views.product_view, name='product_view'),
+    path('cart_checkout/', views.cart_checkout, name='cart_checkout'),
+    path('send_receipt/', views.send_receipt, name='send_receipt'),
+    
     
 ]

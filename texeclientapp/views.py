@@ -5,7 +5,7 @@ from .models import *
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from datetime import datetime,date, timedelta
-
+import pywhatkit
 def index(request):
     return render(request, 'index.html')
 
@@ -238,3 +238,143 @@ def user_regi(request):
             messages.error(request,"Username already Exist")
             return redirect ("user_regi")
     return render (request,"user/profile.html")
+
+
+def all_item(request):
+    if request.session.has_key('userid'):
+        pass
+    else:
+        return redirect('/')
+    ids=request.session['userid']
+    usr=User_Registration.objects.get(id=ids)
+    items=item.objects.all()
+
+    context={
+            'usr':usr,
+            "items":items
+        }
+    return render (request,"user/all_item.html")
+
+def all_items_add_cart(request, id):
+    if request.session.has_key('userid'):
+        pass
+    else:
+        return redirect('/')
+    ids=request.session['userid']
+    usr=User_Registration.objects.get(id=ids)
+    
+    items=item.objects.get(id=id)
+
+    if cart.objects.filter(user=usr,item=items).exists():
+        messages.error(request, 'This item is already in cart')
+        return redirect("all_item")
+   
+    else:
+        crt=cart()
+        crt.user=usr
+        crt.item=items
+        crt.save()
+        messages.error(request, 'This item is add to cart')
+        items=item.objects.filter(category_id=category)
+        usrd=Profile_User.objects.get(user=ids)
+        context={
+            'user':usrd,
+            "items":items
+        }
+    return redirect("cart_checkout")
+
+def product_view(request, item_id):
+    if request.session.has_key('userid'):
+        pass
+    else:
+        return redirect('/')
+    ids=request.session['userid']
+    usr=Profile_User.objects.get(user=ids)
+    crt_cnt=cart.objects.filter(user=ids).count()
+    try:
+        item_instance = item.objects.get(id=item_id)
+        oprice = item_instance.price
+
+        if item_instance.offer:
+            off = item_instance.offer
+            rp = oprice - (oprice * (off / 100))
+        else:
+            rp = oprice
+
+        return render(request, 'user/productview.html', {'item': item_instance, 'rp': rp,'user':usr,"crt_cnt":crt_cnt})
+
+    except item.DoesNotExist:
+        # Handle the case where the item does not exist
+        return HttpResponse("Item not found", status=404)
+
+
+def cart_checkout(request):
+    if request.session.has_key('userid'):
+        pass
+    else:
+        return redirect('/')
+    ids=request.session['userid']
+    usr=Profile_User.objects.get(user=ids)
+    carts=cart.objects.filter(user=ids)
+    crt_cnt=cart.objects.filter(user=ids).count()
+  
+    context={
+        "cart":carts,
+        'user':usr,
+        "crt_cnt":crt_cnt
+        
+    }
+    return render(request, 'user/cart_checkout.html',context)
+
+def send_receipt(request):
+    ids=request.session['userid']
+    usr=User_Registration.objects.get(id=ids)
+
+    if request.method =="POST":
+        total_amount = request.POST.get('total_amount')
+
+        chk=checkout()
+        chk.user = usr
+        chk.profile = usr
+
+        chk.total_amount=total_amount
+        chk.date=datetime.now()
+        chk.save()
+        item_id =request.POST.getlist('item_id[]') 
+        qty =request.POST.getlist('qty[]') 
+
+        if len(item_id)==len(qty):
+            mapped2 = zip(item_id,qty)
+            mapped2=list(mapped2)
+         
+            for ele in mapped2:
+                itm=item.objects.get(id=ele[0])
+                itm.buying_count=int(itm.buying_count+1)
+                itm.save()
+                created = checkout_item.objects.create(item=itm,qty=ele[1],item_name=itm.name,item_price=itm.offer_price, checkout=chk)
+
+        chk_item=checkout_item.objects.filter(checkout_id=chk)
+      
+        lst=""
+        for i in chk_item:
+            rcp="\n\nItem : "+str(i.item_name)+'\nAmount : '+str(i.item_price)+' * '+str(i.qty)+' = '+str(i.item_price)
+            lst+=rcp
+     
+        tot="\n\nTotal Amount : "+str(total_amount)
+        
+        message = 'Greetings from Malieakal\n\nReciept,\n\nName :'+str(usr.name)+str(usr.lastname)+'\nAddress :'+str(pro.address)+'\n\n'+str(lst)+str(tot)
+      
+        pywhatkit.sendwhatmsg_instantly(
+            phone_no="+918848937577", 
+            message=""+str(message),
+        )
+     
+        messages.error(request, 'Purchase Success Full')
+        
+        for i in item_id:
+            ckt=cart.objects.get(user=usr,item_id=i).delete()
+        
+          
+    
+        return redirect("cart_checkout")
+    return redirect("cart_checkout")
