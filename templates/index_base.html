@@ -278,10 +278,23 @@
     
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
+          {%if user%}
+          <li class="nav-item active">
+            
+            <a class="nav-link  ml-2" href="{% url 'home'%}">Home</a>
+          </li>
+
+          <li class="nav-item active">
+            
+            <a class="nav-link  ml-2" href="{% url 'all_item'%}">All Items</a>
+          </li>
+          {%else%}
           <li class="nav-item active">
             
             <a class="nav-link  ml-2" href="{% url 'index'%}">Home</a>
           </li>
+          
+          {%endif%}
           
         </ul>
         <form class="d-flex" role="search" method="POST" action="">
@@ -297,17 +310,40 @@
          </form>
 
         <div>
+          {% if user%}
+          <a href="{% url 'cart_checkout'%}"><i class="fa-sharp fa-solid fa-cart-shopping fa-xl" id="badge" value={{crt_cnt}} style="color: #000000;"></i></a>
+          {%else%}
           <i class="fa-sharp fa-solid fa-cart-shopping fa-xl mt-3 ml-2"  style="color: #000000;"></i>
-         
+          {%endif%}
 
         </div>
         <div>
-   
+          {% if user%}
+          <div>
+            <div class="dropdown" >
+                {% if user.pro_pic %}
+                <img class="rounded-circle article-img dropdown-toggle bg-dark" id="log" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" src="{{user.pro_pic.url}}" id="img" width="40" height="40"><span id="nm" class="text-dark">{{user.name}}</span>
+                  
+                {%else%}
+                <img class="rounded-circle article-img dropdown-toggle" id="log" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" src="{% static 'images\logo\icon.png'%}" id="img" width="40" height="40"><span id="nm" class="text-light">{{user.firstname}}</span>
+                {%endif%}
+                
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="float: left;background-image: linear-gradient(-45deg,#ffffff, #ffffff);width: 50px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); ">
+                    <a class="dropdown-item text-dark" href=""><i class="fa-regular fa-user mr-2"></i>Profile</a>
+                    <a class="dropdown-item  text-dark" href="{%url 'logout'%}"> <i class="mdi mdi-logout text-dark mr-2"></i>Log out</a>
+  
+                </div>
+               
+            </div>
+          </div>
+          {%else%}
             <a href="{% url 'login_main'%}">
               
               <img class="rounded-circle article-img" id="log" type="button" aria-haspopup="true" aria-expanded="false" src="{% static 'images\logo\icon.png'%}" id="img" width="40" height="40">
             
             </a>
+          {%endif%}
+
         
       </div>
       </div>

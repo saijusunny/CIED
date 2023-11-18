@@ -37,7 +37,7 @@
           <table class="table" >
             <thead>
               <tr>
-             
+                <th scope="col" style="color:#6C7293;">Id No.</th>
                 <th scope="col" style="color:#6C7293;">Name</th>
              
                 <th scope="col" style="color:#6C7293;">Date of Birth</th>
@@ -52,6 +52,7 @@
             <tbody id="myTable">
                 {%for staff_member in staff_members%}
                 <tr>
+                <td style="color:white;">{{ staff_member.id }}</td>
                 <td style="color:white;">{{ staff_member.name }}</td>
             
                 <td style="color:white;">{{ staff_member.date_of_birth }}</td>
@@ -81,7 +82,7 @@
   </div>
 
   {%for staff_member in staff_members%}
-  <form method="post" action="{% url 'edit_staff' staff_member.id%}">
+  <form method="POST" action="{% url 'edit_staff' staff_member.id%}" enctype="multipart/form-data">
 
   <div class="rowmt-5 modal fade" id="dis{{staff_member.id}}">
     <div class="modal-dialog bd-example-modal-xl modal-dialog-centered" role="document" tabindex="-1" role="dialog"
@@ -103,36 +104,64 @@
                             {% csrf_token %}
                             
                             <div class="form-group">
-                                <label for="name">Name:</label>
-                                <input type="text" id="name" name="name" value="{{staff_member.name}}" required class="form-control text-light">
-                            </div>
+                              <label for="name">Name:</label>
+                              <input type="text" id="name" name="name" value="{{staff_member.name}}"  required class="form-control text-light ">
+                          </div>
+
+                          <div class="form-group">
+                            <label for="name">Address:</label>
+                            <textarea name="address" class="form-control text-light">{{staff_member.addres}}</textarea>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="name">Profile <Picture></Picture>:</label>
+                          <input type="file" id="pic" name="pic" class="form-control text-light ">
+                        </div>
+
+
+                          
+                      
+                        
+                          <div class="form-group d-flex justify-content-center">
+                              <label for="date_of_birth">Date of Birth:</label>
+                              <input class="ml-2 form-control text-light" type="date" id="date_of_birth" name="date_of_birth" required value="{{staff_member.date_of_birth| date:'Y-m-d' }}">
+                          </div>
+                          <div class="form-group">
+                              <label for="phone_number">Phone Number:</label>
+                              <input type="text" id="phone_number" name="phone_number" required class="form-control text-light " value="{{staff_member.phone_number}}">
+                          </div>
+                          <div class="form-group">
+                              <label for="email">Email:</label>
+                              <input type="email" id="email" name="email" required class="form-control text-light "  value="{{staff_member.email}}">
+                          </div>
+                          
+                          <div class="form-group">
+                              <label for="username">Username:</label>
+                              <input type="text" id="username" name="username" required class="form-control text-light "  value="{{staff_member.username}}">
+                          </div>
+                          <div class="form-group">
+                              <label for="password">Password:</label>
+                              <input type="text" id="password" name="password"  class="form-control text-light"  >
+                              
+                          </div>
+
+                          <div class="form-group">
+                            <label for="password">Confirm Password:</label>
+                            <input type="text" id="cn_password" name="password"  class="form-control text-light ">
                             
-                            <div class="form-group d-flex justify-content-center">
-                                <label for="date_of_birth">Date of Birth:</label>
-                                <input class="ml-2 form-control text-light" type="date" id="date_of_birth" name="date_of_birth" required value="{{staff_member.date_of_birth| date:'Y-m-d'}}">
-                            </div>
-                            <div class="form-group">
-                                <label for="phone_number">Phone Number:</label>
-                                <input type="text" id="phone_number" name="phone_number" required class="form-control text-light" value="{{staff_member.phone_number}}">
-                            </div>
-                            <div class="form-group">
-                                <label for="email">Email:</label>
-                                <input type="email" id="email" name="email" required class="form-control text-light" value="{{staff_member.email}}">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="username">Username:</label>
-                                <input type="text" id="username" name="username" required class="form-control text-light" value="{{staff_member.username}}">
-                            </div>
-                            <div class="form-group">
-                                <label for="password">Password:</label>
-                                <input type="text" id="password" name="password" required class="form-control text-light" value="{{staff_member.password}}">
-                                
-                            </div>
-                            <div class="form-item form-item4">
-                              <label for="Address">Location</label>
-                              <input id="location" type="text" name="location" class="form-control text-light" value="{{staff_member.location}}"/>
+                        </div>
+                          <div class="form-item form-item4">
+                              <label for="">Location</label>
+                              <input id="location" type="text" name="location" class="form-control text-light "  value="{{staff_member.location}}"/>
                            </div>
+
+                           <div class="form-item form-item4 mt-5">
+                            {% if staff_member.access == "on" %}
+                            <input id="access" type="checkbox" name="access " class="mr-3" checked/><label for="" >Order Access</label>
+                            {%else%}
+                            <input id="access" type="checkbox" name="access " class="mr-3"   /><label for="" >Order Access</label>
+                            {%endif%}
+                          </div>
 
                             
                             

@@ -1,4 +1,4 @@
-{% extends 'admin/admin_base.html' %}
+{% extends 'staff/staff_base.html' %}
 {% load static %}
 {% block content %}
 
@@ -161,70 +161,8 @@
 
 <div class="container">
    
-    <div class="card" style="margin-top: -4rem;">
-        <div class="face face1">
-            <div class="content">
-                <div class="icon">
-                    
-                    <h2 class="text-light mt-2">PRODUCT<br>MANAGEMENT</h2>
-                </div>
-            </div>
-        </div>
-        <div class="face face2">
-            <div class="content">
-                <h3>
-                  <a href="{% url 'admin_add_item' %}" class="center-vertical"><button type="button" class="btn btn-dark center-vertical ">Add Product</button></a>
-                </h3>
-                <p>
-                  <a href="{% url 'admin_itemlist' %}" class="center-vertical"><button type="button" class="btn btn-dark center-vertical mt-2 mx-auto">Product List</button></a>
-              
-                </p>
-                </div>
-        </div>
-    </div>
-
-    <div class="card" style="margin-top: -4rem;">
-        <div class="face face1">
-            <div class="content">
-                <div class="icon">
-                    
-                    <h2 class="text-light mt-2">USER<br>MANAGEMENT</h2>
-                </div>
-            </div>
-        </div>
-        <div class="face face2">
-            <div class="content">
-               
-                <p>
-                  <a href="{% url 'user_list_view' %}" class="center-vertical"><button type="button" class="btn btn-dark center-vertical mt-2 mx-auto">User List</button></a>
-              
-                </p>
-                </div>
-        </div>
-    </div>
-
-    <div class="card" style="margin-top: -4rem;">
-        <div class="face face1">
-            <div class="content">
-                <div class="icon">
-                   
-                    <h2 class="text-light mt-2">STAFF<br>MANAGEMENT</h2>
-                </div>
-            </div>
-        </div>
-        <div class="face face2">
-            <div class="content">
-                <h3>
-                  <a href="{% url 'add_staff' %}" class="center-vertical"><button type="button" class="btn btn-dark center-vertical">Add Staff</button></a>
-                <!--<p>-->
-                    <br>
-                 <a href="{% url 'staff_all_list' %}" class="center-vertical"><button type="button" class="btn btn-dark center-vertical mt-2">Staff List</button></a>                </h3>
-                <!--</p>-->
-            </div>
-        </div>
-    </div>
     
-    
+    {% if user.access == "on"%}
     <div class="card" style="margin-top: -4rem;">
         <div class="face face1" >
             <div class="content">
@@ -237,10 +175,28 @@
         <div class="face face2">
             <div class="content">
                 <h3>
-                  <a href="{% url 'ad_view_order'%}" class=""><button type="button" class="btn btn-dark">View Orders</button></a>                </h3>
+                  <a href="{% url 'staff_view_order'%}" class=""><button type="button" class="btn btn-dark">View Orders</button></a>                </h3>
             </div>
         </div>
     </div>
+    {%else%}
+    <div class="card" style="margin-top: -4rem;">
+        <div class="face face1" >
+            <div class="content">
+                <div class="icon" style="background-color: green;">
+                    
+                    <h2 class="text-light mt-3 ml-5">No Access</h2>
+                </div>
+            </div>
+        </div>
+        <div class="face face2">
+            <div class="content">
+                <h3>
+                  <a href="" class=""><button type="button" class="btn btn-dark">No Access</button></a>                </h3>
+            </div>
+        </div>
+    </div>
+    {%endif%}
 
     
 

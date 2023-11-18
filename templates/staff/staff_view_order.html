@@ -1,4 +1,4 @@
-{% extends 'admin/admin_base.html' %}
+{% extends 'staff/staff_base.html' %}
 {% load static %}
 {% block content %}
 <div class="row pt-3" style="background-color: black;">
@@ -44,6 +44,7 @@
                 <th scope="col" style="color:#6C7293;">Total Amount</th>
                 <th scope="col" style="color:#6C7293;">Delivered Date</th>
                 <th scope="col" style="color:#6C7293;">Status</th>
+
                 <th scope="col" style="color:#6C7293;">Actions</th>
                 
               </tr>
@@ -56,16 +57,23 @@
             
                 <td style="color:white;">{{ x.user.name }} {{ x.user.lastname }}</td>
                 <td style="color:white;">{{ x.total_amount }}</td>
-                <td style="color:white;">{{ x.status }}</td>
-                {%if x.delivery_date%}
+                  {%if x.delivery_date%}
                   <td style="color:white;">{{ x.delivery_date }}</td>
                   {%else%}
                   <td style="color:white;">Not Delivered</td>
                   {%endif%}
+                <td style="color:white;">
+                  <select name="status" id="status" class="form-control text-light" onchange="chng_sts('{{x.id}}')">
+                      <option selected>{{ x.status }}</option>
+                      <option value="complete">Complete</option>
+                      <option value="pending">Pending</option>
+                  </select>
+                </td>
+
 
                 <td class="action-buttons">
                     <a href="" class="btn btn-success" data-toggle="modal" data-target="#dis{{x.id}}"> View</a>
-                    <a href="{% url 'ad_delete_check' x.id%}"  onclick="confirm('Are You Sure')" class="btn btn-danger"> Delete</a>
+                    <a href="{% url 'staff_delete_check' x.id%}"  onclick="confirm('Are You Sure')" class="btn btn-danger"> Delete</a>
                 
                 </td>
                 </tr>
@@ -125,26 +133,6 @@
                     <h5>{{x.total_amount}}</h5>
                 </div>
             </div>
-
-            <div class="row mt-3">
-              <div class="col-sm-3">
-                 Delivered Date:
-              </div>
-              <div class="col-sm-9">
-                  <h5>{{x.delivery_date}}</h5>
-              </div>
-            </div>
-
-            <div class="row mt-3">
-              <div class="col-sm-3">
-                 Delivered Staff Id:
-              </div>
-              <div class="col-sm-9">
-                  <h5>{{x.staff}}</h5>
-              </div>
-            </div>
-
-
             <div class="table-responsive">
                 <table class="table" >
                   <thead>
@@ -154,7 +142,6 @@
                       <th scope="col" style="color:#6C7293;">Item Name</th>
                       <th scope="col" style="color:#6C7293;">Quantity</th>
                       <th scope="col" style="color:#6C7293;">Item Price</th>
-                      
                       
                     </tr>
                   </thead>
@@ -179,8 +166,83 @@
       </div>
     </div>
   </div>
+  </div>
+  </div>
 {%endfor%}
-   
+
+{%for i in chk%}
+<form action="{% url 'chk_otp' i.id%}" method="POST" enctype="multipart/form-data">
+
+  <div class="rowmt-5 modal fade" id="subcat{{i.id}}">
+    <div class="modal-dialog bd-example-modal-xl modal-dialog-centered" role="document" tabindex="-1" role="dialog"
+      aria-labelledby="myLargeModalLabel" aria-hidden="true">
+      <div class="modal-content modal-xl" style="background-color: #191c24;">
+        <div class="card ">
+          <div class="card-body">
+            <button type="button" class="close" data-dismiss="modal" aria-label=""
+              style="color: red;border:none;float: right;font-size: 20px;">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            
+            
+              {% csrf_token %}
+              <div class="row mb-4">
+                <div class="col-sm-12"style="border-radius: 10px;">
+                 
+                </div>
+              </div>
+              <div class="row mb-4">
+                <div class="col-sm-12" style="border-radius: 10px; ">
+                  <input type="number" name="quesry" id="" class="form-control" placeholder="Enter OTP">
+                </div>
+              </div>
+
+              <div class="row mb-4">
+                <div class="col-sm-12" style="border-radius: 10px;text-align: center;">
+                 <input type="submit" onclick="alert('Item Deliveerd')" class="btn" style="background-color: red; color: white;" value="Submit">
+                </div>
+              </div>
+              
+              
+              
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+{%endfor%}
+
+
+<script>
+  function chng_sts(el){
+      var elem=el
+      var ids=document.getElementById('status').value;
+      
+      $.ajax({
+          type: "GET",
+          url: "{% url 'staffchange_status' %}",
+          data: {
+              ele : ids,
+              idss:elem,
+              
+          },
+          success:function(response){
+            alert("Otp Send To Given Email Id")
+            if (ids == "complete"){
+             
+              var myModal = new bootstrap.Modal(document.getElementById(`subcat${elem}`));
+              myModal.show();
+            }else{
+
+            }
+              
+            
+          }});
+
+      
+  }
+</script>
   
   <script>
     $(document).ready(function () {

@@ -26,7 +26,7 @@
                     <hr>
                     <div class="row">
                         <div class="col-md-12">
-                            <form method="POST" action="{% url 'add_staff'%}" enctype="multipart/form-data">
+                            <form method="POST" action="{% url 'user_regi'%}" enctype="multipart/form-data">
                             
                                 {% csrf_token %}
                                 
@@ -78,7 +78,7 @@
                                   
                               </div>
                                 <div class="form-item form-item4">
-                                    <label for="Address">Location</label>
+                                    <label for="">Location</label>
                                     <input id="location" type="text" name="location" class="form-control "/>
                                  </div>
                                 

@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import datetime,date, timedelta
 role = (
     ("user1", "Staff"),
     ("user2", "User"),
@@ -16,10 +17,11 @@ class User_Registration(models.Model):
     password = models.CharField(max_length=255,blank=True,null=True)
     status =models.CharField(max_length = 255,blank=True,null=True, default="active")
     addres =  models.TextField(blank=True,null=True)
-    joindate = models.DateField(null=True)
+    joindate = models.DateField(null=True, default=date.today())
     date_of_birth = models.DateField(null=True)
     last_login = models.DateTimeField(null=True, blank=True)    
     location= models.CharField(max_length=255,blank=True,null=True)
+    access= models.CharField(max_length=255,blank=True,null=True)
     def str(self):
         return self.nickname
     
@@ -28,6 +30,7 @@ class User_Registration(models.Model):
 
 class item(models.Model):
     user = models.ForeignKey(User_Registration, on_delete=models.SET_NULL, null=True, blank=True)
+    
     name = models.CharField(max_length=255,blank=True,null=True)
     title_description = models.CharField(max_length=100,blank=True,null=True)
     description = models.CharField(max_length=255,blank=True,null=True)
@@ -46,6 +49,10 @@ class checkout(models.Model):
     user = models.ForeignKey(User_Registration, on_delete=models.SET_NULL, null=True, blank=True)
     total_amount=models.FloatField(default=0,null=True, blank=True)
     date=models.DateTimeField(null=True, blank=True)
+    status = models.CharField(max_length=255,blank=True,null=True)
+    delivery_date=models.DateTimeField(null=True, blank=True)
+    otp=models.IntegerField(default=0,null=True, blank=True)
+    staff=models.IntegerField(default=0,null=True, blank=True)
 
 
 
